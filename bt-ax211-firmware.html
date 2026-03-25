@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intel AX211 Bluetooth — Corsair Pairing Fix</title>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --text-secondary: #888888;
+            --text-muted: #999999;
+            --link-color: #409ad6;
+            --link-hover: #2a7cc4;
+            --border-color: #e8e8e8;
+            --code-bg: #f7f7f7;
+            --code-text: #333333;
+            --table-header-bg: #f5f5f5;
+            --table-stripe-bg: #fafafa;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #1e1e1e;
+            --text-color: #d4d4d4;
+            --text-secondary: #9d9d9d;
+            --text-muted: #707070;
+            --link-color: #58a6ff;
+            --link-hover: #79b8ff;
+            --border-color: #2d2d2d;
+            --code-bg: #252525;
+            --code-text: #c9d1d9;
+            --table-header-bg: #2d2d2d;
+            --table-stripe-bg: #232323;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 15px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+            font-size: 1rem;
+            line-height: 1.7;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.2s, color 0.2s;
+            min-height: 100vh;
+        }
+
+        .toolbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 40px;
+            background: var(--bg-color);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0 20px;
+            gap: 10px;
+            z-index: 100;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+
+        .search-box {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-box input {
+            background: var(--border-color);
+            border: 1px solid transparent;
+            border-radius: 4px;
+            padding: 4px 10px 4px 28px;
+            font-size: 13px;
+            color: var(--text-color);
+            width: 200px;
+            transition: all 0.2s;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--link-color);
+            width: 280px;
+        }
+
+        .search-box input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .search-box::before {
+            content: "⌕";
+            position: absolute;
+            left: 8px;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .theme-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 4px 10px;
+            color: var(--text-color);
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        .theme-btn:hover {
+            background: var(--border-color);
+        }
+
+        .content-wrapper {
+            max-width: 750px;
+            margin: 0 auto;
+            padding: 60px 20px 100px;
+        }
+
+        .content {
+            max-width: 100%;
+        }
+
+        h1 {
+            font-size: 1.75em;
+            font-weight: 600;
+            margin-bottom: 0.6em;
+            line-height: 1.4;
+            padding-bottom: 0.3em;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        h2 {
+            font-size: 1.4em;
+            font-weight: 600;
+            margin-top: 1.8em;
+            margin-bottom: 0.6em;
+            padding-bottom: 0.25em;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        h3 {
+            font-size: 1.15em;
+            font-weight: 600;
+            margin-top: 1.4em;
+            margin-bottom: 0.5em;
+        }
+
+        h4 {
+            font-size: 1em;
+            font-weight: 600;
+            margin-top: 1.2em;
+            margin-bottom: 0.4em;
+        }
+
+        p {
+            margin-bottom: 1em;
+        }
+
+        a {
+            color: var(--link-color);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s;
+        }
+
+        a:hover {
+            border-bottom-color: var(--link-hover);
+        }
+
+        ul, ol {
+            margin-bottom: 1em;
+            padding-left: 1.8em;
+        }
+
+        li {
+            margin-bottom: 0.25em;
+        }
+
+        li > ul, li > ol {
+            margin-top: 0.25em;
+            margin-bottom: 0;
+        }
+
+        blockquote {
+            border-left: 3px solid var(--border-color);
+            padding: 0.2em 1em;
+            margin: 1em 0;
+            color: var(--text-secondary);
+        }
+
+        blockquote p:last-child {
+            margin-bottom: 0;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid var(--border-color);
+            margin: 2em 0;
+        }
+
+        code {
+            font-family: "Courier New", Consolas, "Lucida Console", monospace;
+            font-size: 0.9em;
+            background: var(--code-bg);
+            color: var(--code-text);
+            padding: 1px 5px;
+            border-radius: 3px;
+        }
+
+        pre {
+            background: var(--code-bg);
+            color: var(--code-text);
+            padding: 15px 20px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 1em 0;
+            font-size: 13px;
+            line-height: 1.5;
+            font-family: "Courier New", Consolas, "Lucida Console", monospace;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            font-size: 13px;
+            color: var(--code-text);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1em 0;
+            font-size: 0.95em;
+        }
+
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 8px 12px;
+            text-align: left;
+        }
+
+        th {
+            background: var(--table-header-bg);
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background: var(--table-stripe-bg);
+        }
+
+        details {
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            margin: 1em 0;
+            overflow: hidden;
+        }
+
+        details[open] {
+            border-color: var(--link-color);
+        }
+
+        summary {
+            padding: 10px 15px;
+            cursor: pointer;
+            font-weight: 500;
+            background: var(--bg-color);
+            list-style: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: background-color 0.15s;
+            user-select: none;
+        }
+
+        summary:hover {
+            background: var(--border-color);
+        }
+
+        summary::-webkit-details-marker {
+            display: none;
+        }
+
+        summary::after {
+            content: "▸";
+            font-size: 1em;
+            color: var(--text-muted);
+            transition: transform 0.2s;
+        }
+
+        details[open] summary::after {
+            transform: rotate(90deg);
+        }
+
+        details[open] summary {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .details-content {
+            padding: 15px;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+            font-size: 1.1em;
+            display: none;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        section {
+            scroll-margin-top: 60px;
+        }
+
+        ::selection {
+            background: var(--link-color);
+            color: white;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    <div class="toolbar">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search...">
+        </div>
+        <button class="theme-btn" id="themeToggle">◐</button>
+    </div>
+
+    <div class="content-wrapper">
+        <div class="content" id="contentArea">
+            <div class="no-results" id="noResults" style="display: none;">
+                No matching sections found. Try a different search term.
+            </div>
+
+            <section id="title">
+                <h1>Intel AX211 Bluetooth — Corsair Pairing Fix</h1>
+                <blockquote>
+                    Firmware fix for Intel AX211 CNVi Bluetooth failing to pair with Corsair peripherals on Linux.
+                    Tested on Linux Mint 22.3 Zena (kernel 6.8). Issue and fix may apply to other distributions.
+                </blockquote>
+            </section>
+
+            <hr>
+
+            <section id="background">
+                <h2>Background</h2>
+                <p>I own a Lenovo ThinkPad T14 Gen 3 (Intel) with an Intel AX211 CNVi wireless card. After buying Corsair peripherals (keyboard, mouse), I was unable to pair them over Bluetooth on Linux Mint. Pairing attempts would fail silently or drop immediately after connecting.</p>
+                <p>After months of troubleshooting, the fix turned out to be simple — replace the AX211 firmware files.</p>
+                <p>The same pairing issue also exists on <strong>Windows 10</strong> with the default Intel BT driver. The driver version from Intel's website doesn't fix Corsair pairing either, but a specific driver version resolves it there as well.</p>
+            </section>
+
+            <hr>
+
+            <section id="symptoms">
+                <h2>Symptoms</h2>
+                <ul>
+                    <li>Corsair peripherals (keyboard, mouse) fail to pair over Bluetooth</li>
+                    <li>Pairing appears to succeed but the device immediately disconnects</li>
+                    <li><code>bluetoothctl pair &lt;MAC&gt;</code> times out or fails silently</li>
+                    <li>Other Bluetooth devices may work fine, but Corsair-specific devices fail consistently</li>
+                    <li>The problem persists across kernel versions and Bluetooth stack restarts</li>
+                </ul>
+            </section>
+
+            <hr>
+
+            <section id="root-cause">
+                <h2>Root Cause</h2>
+                <p>The Intel AX211 requires two firmware files:</p>
+                <ul>
+                    <li><code>ibt-0040-0041.sfi</code> — main firmware blob</li>
+                    <li><code>ibt-0040-0041.ddc</code> — device-specific calibration parameters (DDC)</li>
+                </ul>
+                <p>The default firmware bundled with Linux Mint / Ubuntu for the AX211 is version 2023.13. This version works for basic Bluetooth operation but lacks the calibration parameters needed to maintain stable connections with certain devices — particularly Corsair peripherals which have stricter timing and power requirements.</p>
+                <p>Two possibilities for why this happens:</p>
+                <ol>
+                    <li><strong>Kernel + firmware version mismatch</strong> — newer kernels (e.g. 6.x) enforce stricter AX211 firmware requirements, and the older bundled firmware doesn't meet them</li>
+                    <li><strong>Hardware-specific calibration</strong> — Corsair devices require exact DDC parameters that the default firmware doesn't provide</li>
+                </ol>
+                <p>The fixed firmware files are version ~60 and include updated calibration data that resolves Corsair pairing.</p>
+            </section>
+
+            <hr>
+
+            <section id="the-fix">
+                <h2 style="color: #27ae60;">The Fix — Linux</h2>
+            </section>
+
+            <section id="step-1">
+                <h3>Step 1 — Get the Firmware Files</h3>
+                <p>The firmware files are available in my GitHub repository:</p>
+                <p><strong><a href="https://github.com/vik-the-guy">Download from GitHub</a></strong></p>
+                <p>Download <code>ibt-0040-0041.sfi</code> and <code>ibt-0040-0041.ddc</code> from the repository.</p>
+            </section>
+
+            <section id="step-2">
+                <h3>Step 2 — Verify Current Firmware Version</h3>
+                <p>Before replacing, check what firmware is currently loaded:</p>
+                <pre>dmesg | grep -i "ibt-0040-0041"</pre>
+                <p>You should see something like:</p>
+                <pre>Bluetooth: hci0: Found device firmware: intel/ibt-0040-0041.sfi
+Bluetooth: hci0: Firmware Version: 98-13.23</pre>
+                <p>This confirms version 98-13.23 (the default) is in use.</p>
+            </section>
+
+            <section id="step-3">
+                <h3>Step 3 — Backup Original Files</h3>
+                <pre>sudo cp /lib/firmware/intel/ibt-0040-0041.sfi /lib/firmware/intel/ibt-0040-0041.sfi.bak
+sudo cp /lib/firmware/intel/ibt-0040-0041.ddc /lib/firmware/intel/ibt-0040-0041.ddc.bak</pre>
+            </section>
+
+            <section id="step-4">
+                <h3>Step 4 — Replace the Firmware Files</h3>
+                <p>Copy the firmware files to <code>/lib/firmware/intel/</code>:</p>
+                <pre>sudo cp ibt-0040-0041.sfi /lib/firmware/intel/
+sudo cp ibt-0040-0041.ddc /lib/firmware/intel/</pre>
+            </section>
+
+            <section id="step-5">
+                <h3>Step 5 — Rebuild Initramfs</h3>
+                <p>This ensures the new firmware is included in the initramfs and loaded at boot:</p>
+                <pre>sudo update-initramfs -u -k all</pre>
+            </section>
+
+            <section id="step-6">
+                <h3>Step 6 — Reboot</h3>
+                <pre>sudo reboot</pre>
+            </section>
+
+            <section id="step-7">
+                <h3>Step 7 — Verify the Firmware Loaded</h3>
+                <p>After reboot, check the loaded firmware version:</p>
+                <pre>dmesg | grep -i bluetooth | grep -i "firmware\|fseq"</pre>
+                <p>Expected output:</p>
+                <pre>Bluetooth: hci0: Found device firmware: intel/ibt-0040-0041.sfi
+Bluetooth: hci0: Firmware loaded in ... usecs
+Bluetooth: hci0: Found Intel DDC parameters: intel/ibt-0040-0041.ddc
+Bluetooth: hci0: Applying Intel DDC parameters completed
+Bluetooth: hci0: Fseq status: Success (0x00)</pre>
+                <p>The key indicators of success:</p>
+                <ul>
+                    <li><code>Fseq status: Success (0x00)</code> — firmware calibration loaded correctly</li>
+                    <li><code>Applying Intel DDC parameters completed</code> — DDC file is being used</li>
+                    <li><code>Firmware timestamp</code> should show a newer version</li>
+                </ul>
+            </section>
+
+            <section id="step-8">
+                <h3>Step 8 — Test Pairing</h3>
+                <p>Pair your Corsair device again:</p>
+                <pre>bluetoothctl
+[bluetooth]# power on
+[bluetooth]# scan on
+[bluetooth]# pair &lt;DEVICE_MAC&gt;
+[bluetooth]# connect &lt;DEVICE_MAC&gt;
+[bluetooth]# trust &lt;DEVICE_MAC&gt;</pre>
+                <p>The device should now pair and stay connected.</p>
+            </section>
+
+            <section id="reverting">
+                <h3>Reverting the Fix</h3>
+                <p>If something goes wrong, restore the original firmware:</p>
+                <pre>sudo cp /lib/firmware/intel/ibt-0040-0041.sfi.bak /lib/firmware/intel/ibt-0040-0041.sfi
+sudo cp /lib/firmware/intel/ibt-0040-0041.ddc.bak /lib/firmware/intel/ibt-0040-0041.ddc
+sudo update-initramfs -u -k all
+sudo reboot</pre>
+            </section>
+
+            <hr>
+
+            <section id="firmware-locations">
+                <h2>Firmware File Locations</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>File</th>
+                            <th>Purpose</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>ibt-0040-0041.sfi</code></td>
+                            <td>Main AX211 firmware blob — contains Bluetooth baseband and radio firmware</td>
+                        </tr>
+                        <tr>
+                            <td><code>ibt-0040-0041.ddc</code></td>
+                            <td>Device-specific calibration data — tuning parameters for power, timing, and frequency response</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <hr>
+
+            <section id="compatibility">
+                <h2>Compatibility</h2>
+                <p>This fix has been tested on:</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Component</th>
+                            <th>Version</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>OS</td>
+                            <td>Linux Mint 22.3 Zena (Ubuntu Noble base)</td>
+                        </tr>
+                        <tr>
+                            <td>Kernel</td>
+                            <td>6.8.0-106-generic</td>
+                        </tr>
+                        <tr>
+                            <td>Bluetooth adapter</td>
+                            <td>Intel AX211 CNVi</td>
+                        </tr>
+                        <tr>
+                            <td>Affected devices</td>
+                            <td>Corsair peripherals (keyboard, mouse)</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p>The fix may apply to other distributions and kernel versions. The firmware is generally compatible with any Linux system using the standard firmware loading mechanism.</p>
+            </section>
+
+            <hr>
+
+            <section id="windows-fix">
+                <h2>The Fix — Windows 10</h2>
+                <p>The same Corsair pairing issue also affects <strong>Windows 10</strong> with the Intel AX211 Bluetooth driver. The default driver from Intel's website or Windows Update does not fix Corsair device pairing.</p>
+                <p>The specific driver version <code>BT-22.130.0-32-64UWD-Win10-Win11.exe</code> resolves the issue.</p>
+                <p><strong><a href="https://github.com/vik-the-guy">Download the Windows driver from GitHub</a></strong></p>
+
+                <details>
+                    <summary>Step 1 — Uninstall the Current Driver</summary>
+                    <div class="details-content">
+                        <p>Before installing the new driver, remove the existing Intel Bluetooth driver completely:</p>
+                        <ol>
+                            <li>Open <strong>Device Manager</strong></li>
+                            <li>Find <strong>Bluetooth</strong> → <strong>Intel(R) Wireless Bluetooth(R)</strong></li>
+                            <li>Right-click → <strong>Uninstall device</strong></li>
+                            <li>Check <strong>"Attempt to remove the driver software for this device"</strong> → click <strong>Uninstall</strong></li>
+                            <li>Repeat for any duplicate or residual Intel BT entries under Bluetooth</li>
+                            <li>Reboot Windows</li>
+                        </ol>
+                    </div>
+                </details>
+
+                <details>
+                    <summary>Step 2 — Install the New Driver</summary>
+                    <div class="details-content">
+                        <p>After reboot:</p>
+                        <ol>
+                            <li>Download <code>BT-22.130.0-32-64UWD-Win10-Win11.exe</code> from the GitHub repository</li>
+                            <li>Run the installer as <strong>Administrator</strong></li>
+                            <li>Follow the on-screen prompts to complete installation</li>
+                            <li>Reboot if prompted</li>
+                        </ol>
+                        <p>After installation, Corsair peripherals should pair and stay connected.</p>
+                    </div>
+                </details>
+            </section>
+
+            <hr>
+
+            <section id="notes">
+                <h2>Notes</h2>
+                <ul>
+                    <li>The firmware files are loaded by the kernel's <code>btintel</code> driver at boot. No userspace changes are needed.</li>
+                    <li>If your kernel uses compressed firmware (`.zst` files), ensure you also have those in place. The <code>update-initramfs</code> step handles this automatically.</li>
+                    <li>Bluetooth pairing behavior may improve for non-Corsair devices as well after the firmware update, as the DDC calibration data is more comprehensive.</li>
+                    <li>Both the Linux firmware fix and Windows driver fix address the same root cause — the default calibration data for the AX211 is insufficient for Corsair devices.</li>
+                </ul>
+            </section>
+
+            <hr>
+
+            <section id="footer">
+                <blockquote>
+                    <em>Tested on: Linux Mint 22.3 Zena · kernel 6.8.0-106-generic · Intel AX211 CNVi · Windows 10</em>
+                </blockquote>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        // Theme toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+        
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', savedTheme);
+        updateThemeButton(savedTheme);
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeButton(newTheme);
+        });
+
+        function updateThemeButton(theme) {
+            themeToggle.textContent = theme === 'light' ? '◑' : '◐';
+            themeToggle.title = theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode';
+        }
+
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        const noResults = document.getElementById('noResults');
+
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            const sections = document.querySelectorAll('section');
+            
+            let hasResults = false;
+            
+            sections.forEach(section => {
+                const text = section.textContent.toLowerCase();
+                const matches = query === '' || text.includes(query);
+                
+                if (matches) {
+                    section.classList.remove('hidden');
+                    hasResults = true;
+                    
+                    if (query !== '') {
+                        highlightText(section, query);
+                    } else {
+                        removeHighlight(section);
+                    }
+                } else {
+                    section.classList.add('hidden');
+                }
+            });
+            
+            noResults.style.display = hasResults ? 'none' : 'block';
+        });
+
+        function highlightText(element, query) {
+            const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, null, false);
+            const nodes = [];
+            
+            while (walker.nextNode()) {
+                nodes.push(walker.currentNode);
+            }
+            
+            nodes.forEach(node => {
+                if (node.parentNode.tagName === 'PRE' || node.parentNode.tagName === 'CODE') return;
+                
+                const text = node.textContent;
+                const regex = new RegExp(`(${query})`, 'gi');
+                
+                if (regex.test(text)) {
+                    const span = document.createElement('span');
+                    span.innerHTML = text.replace(regex, '<span style="background: #ffeaa7; padding: 1px 4px; border-radius: 2px;">$1</span>');
+                    node.parentNode.replaceChild(span, node);
+                }
+            });
+        }
+
+        function removeHighlight(element) {
+            const highlights = element.querySelectorAll('span[style*="background"]');
+            highlights.forEach(h => {
+                const text = h.textContent;
+                h.parentNode.replaceChild(document.createTextNode(text), h);
+            });
+        }
+
+        // Smooth scroll to section
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
