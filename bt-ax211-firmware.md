@@ -51,7 +51,7 @@ The firmware files are available in my GitHub repository:
 
 **[Download from GitHub](https://github.com/vik-the-guy)**
 
-Download `ibt-0040-0041.sfi` and `ibt-0040-0041.ddc` from the repository.
+Download `ibt-0040-0041.sfi` and `ibt-0040-0041.ddc` from the repository. They are compressed in the linux-fix.tar.gz file.
 
 ---
 
